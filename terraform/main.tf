@@ -2,7 +2,7 @@ terraform {
   required_providers {
     render = {
       source  = "render-oss/render"
-      version = ">= 0.1.0"
+      version = ">= 1.7.0"
     }
   }
 }
@@ -16,18 +16,15 @@ resource "render_web_service" "flask_app" {
   plan   = "free"
   region = "frankfurt"
 
-  runtime = "docker"
-
-  image = {
-    url = var.image_url
+  runtime_source = {
+    image = {
+      image_url = var.image_url
+    }
   }
 
-  auto_deploy = false
-
-  env_vars = [
-    {
-      key   = "ENV"
+  env_vars = {
+    ENV = {
       value = "production"
     }
-  ]
+  }
 }

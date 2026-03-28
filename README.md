@@ -61,151 +61,63 @@ Vous pouvez cliquez sur votre URL est observez le résultat.
 * Une image Docker déposée dans GHCR (espace de stockage des images Docker de GitHUb) est utilisée par Render pour créer un Web Service, qui exécute alors un container et expose une application via une URL publique.
 * Il ne peut y avoir qu'un container par Web Service. Si vous souhaitez lancer plusieurs Docker, il faudra alors créer plusieurs Web Service.
 * Vous pouvez créer autant de Web Service que vous souhaitez mais le cumul d'utilisation autorisé pour le compte Free est de maximum 750h par mois. **Pensez à la fin de vos ateliers à mettre en pause vos Web Service**.  
-
-
-
+  
 ---------------------------------------------------
-Séquence 4 : 💥 Scénarios de crash possibles  
+✅ Séquence 4 : Exercices  
 Difficulté : Facile (~30 minutes)
 ---------------------------------------------------
-### 🎬 **Scénario 1 : PCA — Crash du pod**  
-Nous allons dans ce scénario **détruire notre Pod Kubernetes**. Ceci simulera par exemple la supression d'un pod accidentellement, ou un pod qui crash, ou un pod redémarré, etc..
+### Exercice 1  
+Ajouter une nouvelle route dans votre application.
 
-**Destruction du pod :** Ci-dessous, la cible de notre scénario   
-  
-![Screenshot Actions](scenario1.png)  
-
-Nous perdons donc ici notre application mais pas notre base de données puisque celle-ci est déposée dans le PVC pra-data hors du pod.  
-
-Copier/coller le code suivant dans votre terminal Codespace pour détruire votre pod :
 ```
-kubectl -n pra get pods
+@app.route("/info")
+def info():
+    return {
+        "app": "Flask Render",
+        "student": "VOTRE_NOM",
+        "version": "v1"
+    }
 ```
-Notez le nom de votre pod qui est différent pour tout le monde.  
-Supprimez votre pod (pensez à remplacer <nom-du-pod-flask> par le nom de votre pod).  
-Exemple : kubectl -n pra delete pod flask-7c4fd76955-abcde  
+### Exercice 2    
+Injecter une variable d'environnement dans Render via Terraform.
+1° - Modifier le main.tf de Terraform  
 ```
-kubectl -n pra delete pod <nom-du-pod-flask>
+env_vars = {
+  ENV = {
+    value = "production"
+  }
+}
 ```
-**Vérification de la suppression de votre pod**
+2° - Et dans votre application Flask ajoutez la route suivante  
 ```
-kubectl -n pra get pods
+@app.route("/env")
+def env():
+    return {"env": os.getenv("ENV")}
 ```
-👉 **Le pod a été reconstruit sous un autre identifiant**.  
-Forward du port 8080 du nouveau service  
-```
-kubectl -n pra port-forward svc/flask 8080:80 >/tmp/web.log 2>&1 &
-```
-Observez le résultat en ligne  
-https://...**/consultation** -> Vous n'avez perdu aucun message.
-  
-👉 Kubernetes gère tout seul : Aucun impact sur les données ou sur votre service (PVC conserve la DB et le pod est reconstruit automatiquement) -> **C'est du PCA**. Tout est automatique et il n'y a aucune rupture de service.
-  
----------------------------------------------------
-### 🎬 **Scénario 2 : PRA - Perte du PVC pra-data** 
-Nous allons dans ce scénario **détruire notre PVC pra-data**. C'est à dire nous allons suprimer la base de données en production. Ceci simulera par exemple la corruption de la BDD SQLite, le disque du node perdu, une erreur humaine, etc. 💥 Impact : IL s'agit ici d'un impact important puisque **la BDD est perdue**.  
-
-**Destruction du PVC pra-data :** Ci-dessous, la cible de notre scénario   
-  
-![Screenshot Actions](scenario2.png)  
-
-🔥 **PHASE 1 — Simuler le sinistre (perte de la BDD de production)**  
-Copier/coller le code suivant dans votre terminal Codespace pour détruire votre base de données :
-```
-kubectl -n pra scale deployment flask --replicas=0
-```
-```
-kubectl -n pra patch cronjob sqlite-backup -p '{"spec":{"suspend":true}}'
-```
-```
-kubectl -n pra delete job --all
-```
-```
-kubectl -n pra delete pvc pra-data
-```
-👉 Vous pouvez vérifier votre application en ligne, la base de données est détruite et la service n'est plus accéssible.  
-
-✅ **PHASE 2 — Procédure de restauration**  
-Recréer l’infrastructure avec un PVC pra-data vide.  
-```
-kubectl apply -f k8s/
-```
-Vérification de votre application en ligne.  
-Forward du port 8080 du service pour tester l'application en ligne.  
-```
-kubectl -n pra port-forward svc/flask 8080:80 >/tmp/web.log 2>&1 &
-```
-https://...**/count** -> =0.  
-https://...**/consultation** Vous avez perdu tous vos messages.  
-
-Retaurez votre BDD depuis le PVC Backup.  
-```
-kubectl apply -f pra/50-job-restore.yaml
-```
-👉 Vous pouvez vérifier votre application en ligne, **votre base de données a été restaureé** et tous vos messages sont bien présents.  
-
-Relance des CRON de sauvgardes.  
-```
-kubectl -n pra patch cronjob sqlite-backup -p '{"spec":{"suspend":false}}'
-```
-👉 Nous n'avons pas perdu de données mais Kubernetes ne gère pas la restauration tout seul. Nous avons du protéger nos données via des sauvegardes régulières (du PVC pra-data vers le PVC pra-backup). -> **C'est du PRA**. Il s'agit d'une stratégie de sauvegarde avec une procédure de restauration.  
+Observation : Terraform a bien injecter une variable d'environnement dans Render et vous êtes en mesure de pouvoir l'utiliser (ex : affichage).  
 
 ---------------------------------------------------
-Séquence 5 : Exercices  
-Difficulté : Moyenne (~45 minutes)
+✅ Séquence 5 : Atelier  
+Difficulté : Moyenne (~1h30 heure)
 ---------------------------------------------------
-**Complétez et documentez ce fichier README.md** pour répondre aux questions des exercices.  
-Faites preuve de pédagogie et soyez clair dans vos explications et procedures de travail.  
+### React -> Flask -> PostgreSQL -> Adminer  
+Vous allez créer un environnement de développement qui proposera aux développeur les outils suivants : React pour le front, Flask pour le backend, PPostgreSQL pour le BDD et Adminer pour gérer la BDD.  
 
-**Exercice 1 :**  
-Quels sont les composants dont la perte entraîne une perte de données ?  
+**Achitecture cible** est la suivante :  
   
-*..Répondez à cet exercice ici..*
+<img width="1536" height="1024" alt="image" src="https://github.com/user-attachments/assets/b5611e31-78d3-402b-9d36-7589784f1dd7" />
 
-**Exercice 2 :**  
-Expliquez nous pourquoi nous n'avons pas perdu les données lors de la supression du PVC pra-data  
-  
-*..Répondez à cet exercice ici..*
+* **Flask** : créé par Terraform comme **Web Service**
+* **Adminer** : créé par Terraform comme **Web Service**
+* **React** : créé une fois dans l’interface Render comme **Static Site, connecté au repo GitHub**
+* **PostgreSQL** : créé comme **Managed Database**
 
-**Exercice 3 :**  
-Quels sont les RTO et RPO de cette solution ?  
-  
-*..Répondez à cet exercice ici..*
-
-**Exercice 4 :**  
-Pourquoi cette solution (cet atelier) ne peux pas être utilisé dans un vrai environnement de production ? Que manque-t-il ?   
-  
-*..Répondez à cet exercice ici..*
-  
-**Exercice 5 :**  
-Proposez une archtecture plus robuste.   
-  
-*..Répondez à cet exercice ici..*
-
----------------------------------------------------
-Séquence 6 : Ateliers  
-Difficulté : Moyenne (~2 heures)
----------------------------------------------------
-### **Atelier 1 : Ajoutez une fonctionnalité à votre application**  
-**Ajouter une route GET /status** dans votre application qui affiche en JSON :
-* count : nombre d’événements en base
-* last_backup_file : nom du dernier backup présent dans /backup
-* backup_age_seconds : âge du dernier backup
-
-*..**Déposez ici une copie d'écran** de votre réussite..*
-
----------------------------------------------------
-### **Atelier 2 : Choisir notre point de restauration**  
-Aujourd’hui nous restaurobs “le dernier backup”. Nous souhaitons **ajouter la capacité de choisir un point de restauration**.
-
-*..Décrir ici votre procédure de restauration (votre runbook)..*  
-  
 ---------------------------------------------------
 Evaluation
 ---------------------------------------------------
-Cet atelier PRA PCA, **noté sur 20 points**, est évalué sur la base du barème suivant :  
-- Série d'exerices (5 points)
-- Atelier N°1 - Ajout d'un fonctionnalité (4 points)
-- Atelier N°2 - Choisir son point de restauration (4 points)
-- Qualité du Readme (lisibilité, erreur, ...) (3 points)
-- Processus travail (quantité de commits, cohérence globale, interventions externes, ...) (4 points) 
+Cet atelier Render, **noté sur 20 points**, est évalué sur la base du barème suivant :  
+- Mise en service (4 points)
+- Exerice 1 - Nouvelle route (2 points)
+- Exerice 2 - Modification de Terraform (2 points)
+- Atelier - Plateforme de développement (9 points)
+- Processus travail (quantité de commits, cohérence globale, interventions externes, ...) (3 points) 

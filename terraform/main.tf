@@ -40,9 +40,9 @@ resource "render_web_service" "flask_app" {
   }
 }
 
-# 2. Service Adminer (Gestion BDD) corrigé avec le nom canonique
+# 2. Service Adminer (Gestion BDD) - Nom unique et syntaxe corrigée
 resource "render_web_service" "adminer" {
-  name   = "adminer-${var.github_actor}"-v2"
+  name   = "adminer-${var.github_actor}-v3" # v3 pour éviter le message "already in use"
   plan   = "free"
   region = "frankfurt"
 

@@ -36,13 +36,17 @@ resource "render_web_service" "flask_app" {
     },
     "DATABASE_URL" = {
       value = "postgresql://ma_db_flask_user:xyRR3jo1vh3sPDa17xxJ9QN2M1u3UnKK@dpg-d76h6olm5p6s73bmopn0-a/ma_db_flask"
+    },
+    # VARIABLE La
+    "MA_VARIABLE" = {
+      value = "Hello Alexis, Terraform fonctionne !"
     }
   }
 }
 
-# 2. Service Adminer (Gestion BDD) - Nom unique et syntaxe corrigée
+#  (Gestion BDD)
 resource "render_web_service" "adminer" {
-  name   = "adminer-${var.github_actor}-v3" # v3 pour éviter le message "already in use"
+  name   = "adminer-${var.github_actor}-v3" 
   plan   = "free"
   region = "frankfurt"
 

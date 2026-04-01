@@ -15,7 +15,7 @@ provider "render" {
 variable "github_actor" { type = string }
 
 resource "render_web_service" "flask_app" {
-  name   = "flask-alexis-v10"
+  name   = "flask-alexis-v12"
   plan   = "free"
   region = "frankfurt"
 
@@ -33,7 +33,7 @@ resource "render_web_service" "flask_app" {
 }
 
 resource "render_web_service" "adminer" {
-  name   = "adminer-alexis-v10"
+  name   = "adminer-alexis-v12"
   plan   = "free"
   region = "frankfurt"
 

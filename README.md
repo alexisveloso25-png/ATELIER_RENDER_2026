@@ -107,10 +107,21 @@ Vous allez créer un environnement de développement qui proposera aux développ
   
 <img width="1536" height="1024" alt="image" src="https://github.com/user-attachments/assets/b5611e31-78d3-402b-9d36-7589784f1dd7" />
 
-* **Flask** : créé par Terraform comme **Web Service**
-* **Adminer** : créé par Terraform comme **Web Service**
-* **React** : créé une fois dans l’interface Render comme **Static Site, connecté au repo GitHub**
-* **PostgreSQL** : créé comme **Managed Database**
+* **Flask** : Créé via Terraform comme **Web Service**
+* **Adminer** : Créé via Terraform comme **Web Service**
+* **React** : A créer directement dans Render via l’interface **New -> Static Site -> Public Git Repository** 
+* **PostgreSQL** : A créer directement dans Render comme **Managed Database**
+
+**Indices N°1 :** La structure mininale pour faire fonctionner React est la suivante
+```
+frontend/
+├── package.json
+├── public/
+│   └── index.html
+└── src/
+    └── index.js
+```
+**Indices N°2 :** Le répertoire racine de votre React (frontend) est à renseigner dans le champ **Root Directory** dans Render lors de la création de votre **Static Site**  
 
 ---------------------------------------------------
 Evaluation

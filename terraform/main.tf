@@ -17,10 +17,6 @@ variable "github_actor" {
   type        = string
 }
 
-# Assurez-vous que ces variables sont définies dans votre fichier variables.tf ou via GitHub Actions
-variable "image_url" { type = string }
-variable "image_tag" { type = string }
-
 resource "render_web_service" "flask_app" {
   name   = "flask-render-iac-${var.github_actor}"
   plan   = "free"
@@ -33,11 +29,11 @@ resource "render_web_service" "flask_app" {
     }
   }
 
-  
+  # Ajout de la variable d'environnement pour l'exercice 2
   env_vars = {
     "ENV" = {
       value = "production"
     }
   }
- 
+
 }

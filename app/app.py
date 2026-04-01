@@ -1,8 +1,30 @@
 from flask import Flask
 import os
+from flask import Flask, jsonify
 
 app = Flask(__name__)
 
+
+DATABASE_URL = os.environ.get("DATABASE_URL")
+
+@app.route("/db")
+def get_db_users():
+    try:
+        # Connexion à PostgreSQL
+        conn = psycopg2.connect(DATABASE_URL)
+        cur = conn.cursor()
+        
+        # Requête pour lire la table que tu as créée
+        cur.execute("SELECT * FROM utilisateurs;")
+        users = cur.fetchall()
+        
+        cur.close()
+        conn.close()
+        
+        return jsonify({"status": "success", "data": users})
+    except Exception as e:
+        return jsonify({"status": "error", "message": str(e)})
+        
 @app.route("/")
 def home():
     return "Flask + Docker + GHCR + Terraform + Render"

@@ -42,7 +42,7 @@ resource "render_web_service" "flask_app" {
 
 # 2. Service Adminer (Gestion BDD) corrigé avec le nom canonique
 resource "render_web_service" "adminer" {
-  name   = "adminer-${var.github_actor}"
+  name   = "adminer-${var.github_actor}"-v2"
   plan   = "free"
   region = "frankfurt"
 

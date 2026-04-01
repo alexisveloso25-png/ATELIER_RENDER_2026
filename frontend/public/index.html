@@ -1,1 +1,23 @@
 
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Atelier 2026 - Alexis</title>
+</head>
+<body>
+    <h1>Projet d'Alexis Veloso</h1>
+    <div id="status">Connexion au serveur...</div>
+
+    <script>
+        // Utilise l'URL exacte de ton service Render v10
+        fetch('https://flask-alexis-v10.onrender.com/info')
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('status').innerText = "Connecté à : " + data.student;
+            })
+            .catch(error => {
+                document.getElementById('status').innerText = "Erreur : Le serveur v10 ne répond pas encore.";
+            });
+    </script>
+</body>
+</html>

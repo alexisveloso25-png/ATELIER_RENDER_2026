@@ -29,7 +29,7 @@ resource "render_web_service" "flask_app" {
     }
   }
 
-  # Ajout de la variable d'environnement pour l'exercice 2
+  
   env_vars = {
     "ENV" = {
       value = "production"

@@ -11,6 +11,14 @@ def home():
 def health():
     return {"status": "Tout est ok ou pas"}
 
+@app.route("/info")
+def info():
+    return {
+        "app": "Flask Render",
+        "student": "VOTRE_NOM",
+        "version": "v1"
+    }
+
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 10000))
     app.run(host="0.0.0.0", port=port)

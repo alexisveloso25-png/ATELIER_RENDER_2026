@@ -17,6 +17,7 @@ variable "github_actor" {
   type        = string
 }
 
+# 1. Service Flask (Backend)
 resource "render_web_service" "flask_app" {
   name   = "flask-render-iac-${var.github_actor}"
   plan   = "free"
@@ -29,14 +30,18 @@ resource "render_web_service" "flask_app" {
     }
   }
 
-  
   env_vars = {
     "ENV" = {
       value = "production"
+    },
+    # URL de connexion à votre PostgreSQL
+    "DATABASE_URL" = {
+      value = "postgresql://ma_db_flask_user:xyRR3jo1vh3sPDa17xxJ9QN2M1u3UnKK@dpg-d76h6olm5p6s73bmopn0-a/ma_db_flask"
     }
   }
-
 }
+
+# 2. Service Adminer (Gestion BDD) corrigé
 resource "render_web_service" "adminer" {
   name   = "adminer-${var.github_actor}"
   plan   = "free"
@@ -44,7 +49,8 @@ resource "render_web_service" "adminer" {
 
   runtime_source = {
     image = {
-      image_url = "docker.io/adminer:latest" # Utilisation de l'image officielle
+      image_url = "docker.io/adminer" # L'URL sans le tag
+      tag       = "latest"           # Le tag séparé
     }
   }
 }

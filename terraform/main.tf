@@ -31,22 +31,17 @@ resource "render_web_service" "flask_app" {
   }
 
   env_vars = {
-    "ENV" = {
-      value = "production"
-    },
+    "ENV" = { value = "production" },
+    "MA_VARIABLE" = { value = "Hello Alexis, Terraform est OK !" },
     "DATABASE_URL" = {
       value = "postgresql://ma_db_flask_user:xyRR3jo1vh3sPDa17xxJ9QN2M1u3UnKK@dpg-d76h6olm5p6s73bmopn0-a/ma_db_flask"
-    },
-    # VARIABLE La
-    "MA_VARIABLE" = {
-      value = "Hello Alexis, Terraform fonctionne !"
     }
   }
 }
 
-#  (Gestion BDD)
+# 2. Service Adminer (Gestion BDD)
 resource "render_web_service" "adminer" {
-  name   = "adminer-${var.github_actor}-v3" 
+  name   = "adminer-${var.github_actor}-v5" 
   plan   = "free"
   region = "frankfurt"
 

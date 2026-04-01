@@ -12,14 +12,10 @@ provider "render" {
   owner_id = var.render_owner_id
 }
 
-variable "github_actor" {
-  description = "GitHub username"
-  type        = string
-}
+variable "github_actor" { type = string }
 
-# 1. Service Flask (Backend)
 resource "render_web_service" "flask_app" {
-  name   = "flask-render-iac-${var.github_actor}"
+  name   = "flask-alexis-v10"
   plan   = "free"
   region = "frankfurt"
 
@@ -32,16 +28,12 @@ resource "render_web_service" "flask_app" {
 
   env_vars = {
     "ENV" = { value = "production" },
-    "MA_VARIABLE" = { value = "Hello Alexis, Terraform est OK !" },
-    "DATABASE_URL" = {
-      value = "postgresql://ma_db_flask_user:xyRR3jo1vh3sPDa17xxJ9QN2M1u3UnKK@dpg-d76h6olm5p6s73bmopn0-a/ma_db_flask"
-    }
+    "DATABASE_URL" = { value = "postgresql://ma_db_flask_user:xyRR3jo1vh3sPDa17xxJ9QN2M1u3UnKK@dpg-d76h6olm5p6s73bmopn0-a/ma_db_flask" }
   }
 }
 
-# 2. Service Adminer (Gestion BDD)
 resource "render_web_service" "adminer" {
-  name   = "adminer-${var.github_actor}-v5" 
+  name   = "adminer-alexis-v10"
   plan   = "free"
   region = "frankfurt"
 

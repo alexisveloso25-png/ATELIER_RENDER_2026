@@ -15,7 +15,7 @@ def health():
 def info():
     return {
         "app": "Flask Render",
-        "student": "VOTRE_NOM",
+        "student": "Veloso Alexis",
         "version": "v1"
     }
 
